@@ -1,0 +1,6 @@
+default_job = "build"
+
+[jobs.build]
+command = ["bash", "-c", "cargo build && mdbook build example"]
+watch = ["src", "example/src", "example/book.toml"]
+default_watch = false

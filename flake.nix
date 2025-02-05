@@ -17,7 +17,10 @@
     toolchain = fenix.packages.${system}.complete.toolchain;
   in {
     devShell.${system} = pkgs.mkShell {
-      packages = [toolchain];
+      packages = [
+        toolchain
+        pkgs.mdbook
+      ];
     };
   };
 }
