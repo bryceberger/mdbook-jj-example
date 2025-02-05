@@ -1,6 +1,8 @@
 [package]
-name = "flake-template"
+name = "mdbook-jj-example"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+mdbook = { version = "0.4.44", default-features = false }
+serde_json = "1.0.138"
