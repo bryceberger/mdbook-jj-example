@@ -9,3 +9,15 @@ jj log
 jj commit -m 'message of commit'
 jj log
 ```
+
+some words here
+
+```bash,example1
+echo "this is the same dir"
+jj log
+```
+
+```bash,example2
+echo "this is a new example"
+jj root
+```

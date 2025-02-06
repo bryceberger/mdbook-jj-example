@@ -1,10 +1,12 @@
 use std::{
+    collections::HashMap,
     io,
     process::{Command, Stdio},
 };
 
 use mdbook::{BookItem, errors::Result, preprocess::CmdPreprocessor};
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Parser, Tag, TagEnd};
+use tempfile::TempDir;
 
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
@@ -49,8 +51,8 @@ struct Rewriter<'input> {
     parser: Parser<'input>,
     example_started: Option<String>,
     example_content: Option<CowStr<'input>>,
-    // output: OutputState,
     output: Option<String>,
+    example_dirs: HashMap<String, TempDir>,
 }
 
 impl<'input> Rewriter<'input> {
@@ -60,6 +62,7 @@ impl<'input> Rewriter<'input> {
             example_started: None,
             example_content: None,
             output: None,
+            example_dirs: HashMap::new(),
         }
     }
 }
@@ -98,7 +101,10 @@ impl<'input> Iterator for Rewriter<'input> {
                     (self.example_started.take(), self.example_content.take())
                 {
                     let mut saved_output = String::from("\n<pre><code>");
-                    let dir = tempfile::TempDir::with_prefix(example).unwrap();
+                    let dir = self
+                        .example_dirs
+                        .entry(example.clone())
+                        .or_insert_with(|| TempDir::with_prefix(example).unwrap());
 
                     for mut command in content.lines() {
                         let silent = if let Some(c) = command.strip_prefix('$') {
